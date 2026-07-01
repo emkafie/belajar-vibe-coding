@@ -39,20 +39,11 @@ export class AuthServices {
   }
 
   static async logoutUser(token: string): Promise<boolean> {
-    const [session] = await db
-      .select()
-      .from(sessions)
-      .where(eq(sessions.token, token))
-      .limit(1);
-
-    if (!session) {
-      return false;
-    }
-
-    await db
+    const [deletedSession] = await db
       .delete(sessions)
-      .where(eq(sessions.token, token));
+      .where(eq(sessions.token, token))
+      .returning();
 
-    return true;
+    return !!deletedSession;
   }
 }

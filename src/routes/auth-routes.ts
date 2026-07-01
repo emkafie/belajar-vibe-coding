@@ -27,7 +27,7 @@ export const authRoutes = new Elysia()
   .delete("/user/logout", async ({ headers, set }) => {
     try {
       const authHeader = headers["authorization"];
-      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      if (!authHeader || authHeader.slice(0, 7).toLowerCase() !== "bearer ") {
         set.status = 401;
         return { error: "Unauthorized" };
       }
