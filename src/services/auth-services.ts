@@ -37,4 +37,22 @@ export class AuthServices {
 
     return token;
   }
+
+  static async logoutUser(token: string): Promise<boolean> {
+    const [session] = await db
+      .select()
+      .from(sessions)
+      .where(eq(sessions.token, token))
+      .limit(1);
+
+    if (!session) {
+      return false;
+    }
+
+    await db
+      .delete(sessions)
+      .where(eq(sessions.token, token));
+
+    return true;
+  }
 }

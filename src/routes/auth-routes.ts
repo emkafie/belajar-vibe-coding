@@ -21,4 +21,28 @@ export const authRoutes = new Elysia()
         data: null,
       };
     }
+  })
+
+  // DELETE /user/logout -> logout user by deleting their session token
+  .delete("/user/logout", async ({ headers, set }) => {
+    try {
+      const authHeader = headers["authorization"];
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        set.status = 401;
+        return { error: "Unauthorized" };
+      }
+
+      const token = authHeader.substring(7); // "Bearer " is 7 chars long
+      const success = await AuthServices.logoutUser(token);
+      
+      if (!success) {
+        set.status = 401;
+        return { error: "Unauthorized" };
+      }
+
+      return { data: "OK" };
+    } catch (error) {
+      set.status = 401;
+      return { error: "Unauthorized" };
+    }
   });
