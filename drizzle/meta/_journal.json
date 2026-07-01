@@ -8,6 +8,13 @@
       "when": 1782875775440,
       "tag": "0000_giant_whizzer",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782877841658,
+      "tag": "0001_loud_raider",
+      "breakpoints": true
     }
   ]
 }
