@@ -15,6 +15,13 @@
       "when": 1782877841658,
       "tag": "0001_loud_raider",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782879505747,
+      "tag": "0002_loose_mockingbird",
+      "breakpoints": true
     }
   ]
 }
