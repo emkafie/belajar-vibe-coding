@@ -37,4 +37,13 @@ export class AuthServices {
 
     return token;
   }
+
+  static async logoutUser(token: string): Promise<boolean> {
+    const [deletedSession] = await db
+      .delete(sessions)
+      .where(eq(sessions.token, token))
+      .returning();
+
+    return !!deletedSession;
+  }
 }
