@@ -58,4 +58,28 @@ export const userRoutes = new Elysia()
         data: null,
       };
     }
+  })
+
+  // POST /user/current -> get currently logged in user from Bearer token
+  .post("/user/current", async ({ headers, set }) => {
+    try {
+      const authHeader = headers["authorization"];
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        set.status = 401;
+        return { error: "Unauthorized" };
+      }
+
+      const token = authHeader.substring(7); // "Bearer " is 7 chars long
+      const user = await UserServices.getCurrentUserByToken(token);
+      
+      if (!user) {
+        set.status = 401;
+        return { error: "Unauthorized" };
+      }
+
+      return { data: user };
+    } catch (error) {
+      set.status = 401;
+      return { error: "Unauthorized" };
+    }
   });
