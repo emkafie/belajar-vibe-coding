@@ -23,7 +23,19 @@ export const userRoutes = new Elysia()
     detail: {
       summary: "Database Health Check",
       description: "Mengecek apakah koneksi ke database PostgreSQL aktif dan berjalan baik.",
-    }
+    },
+    response: {
+      200: t.Object({
+        status: t.String({ default: "ok" }),
+        message: t.String({ default: "Database connection test successful" }),
+        data: t.String({ default: "ok" }),
+      }),
+      500: t.Object({
+        status: t.String({ default: "error" }),
+        message: t.String({ default: "Database connection test failed" }),
+        data: t.Null(),
+      }),
+    },
   })
 
   // GET /users -> list all users
@@ -47,7 +59,27 @@ export const userRoutes = new Elysia()
     detail: {
       summary: "Get All Users",
       description: "Mengambil daftar seluruh user terdaftar (tanpa menyertakan password).",
-    }
+    },
+    response: {
+      200: t.Object({
+        status: t.String({ default: "ok" }),
+        message: t.String({ default: "Users fetched successfully" }),
+        data: t.Array(
+          t.Object({
+            id: t.Integer({ default: 1 }),
+            name: t.String({ default: "John Doe" }),
+            email: t.String({ default: "john@example.com" }),
+            createdAt: t.Date(),
+            updatedAt: t.Date(),
+          })
+        ),
+      }),
+      500: t.Object({
+        status: t.String({ default: "error" }),
+        message: t.String({ default: "Failed to fetch users" }),
+        data: t.Null(),
+      }),
+    },
   })
 
   // POST /users -> register a new user
@@ -77,7 +109,28 @@ export const userRoutes = new Elysia()
     detail: {
       summary: "Register User",
       description: "Mendaftarkan user baru ke sistem dengan mengenkripsi password.",
-    }
+    },
+    response: {
+      201: t.Object({
+        status: t.String({ default: "ok" }),
+        message: t.String({ default: "User created successfully" }),
+        data: t.String({ default: "ok" }),
+      }),
+      400: t.Object({
+        status: t.String({ default: "error" }),
+        message: t.String({ default: "User created failed" }),
+        data: t.Null(),
+      }),
+      422: t.Object({
+        type: t.String({ default: "validation" }),
+        on: t.String({ default: "body" }),
+        summary: t.String({ default: "password: Required" }),
+        property: t.String({ default: "/password" }),
+        message: t.String({ default: "Required" }),
+        expected: t.String({ default: "string" }),
+        received: t.String({ default: "undefined" }),
+      }),
+    },
   })
 
   // POST /user/current -> get currently logged in user from Bearer token
@@ -111,5 +164,19 @@ export const userRoutes = new Elysia()
           bearerAuth: [],
         },
       ],
-    }
+    },
+    response: {
+      200: t.Object({
+        data: t.Object({
+          id: t.Integer({ default: 1 }),
+          name: t.String({ default: "John Doe" }),
+          email: t.String({ default: "john@example.com" }),
+          createdAt: t.Date(),
+          updatedAt: t.Date(),
+        }),
+      }),
+      401: t.Object({
+        error: t.String({ default: "Unauthorized" }),
+      }),
+    },
   });

@@ -29,7 +29,19 @@ export const authRoutes = new Elysia()
     detail: {
       summary: "User Login",
       description: "Verifikasi email dan password untuk mendapatkan token sesi aktif.",
-    }
+    },
+    response: {
+      200: t.Object({
+        status: t.String({ default: "ok" }),
+        message: t.String({ default: "Login successfully" }),
+        data: t.String({ default: "c8bc1126-5927-4907-bfbe-4a2e58f6ae3d" }),
+      }),
+      401: t.Object({
+        status: t.String({ default: "error" }),
+        message: t.String({ default: "Login failed" }),
+        data: t.Null(),
+      }),
+    },
   })
 
   // DELETE /user/logout -> logout user by deleting their session token
@@ -63,5 +75,13 @@ export const authRoutes = new Elysia()
           bearerAuth: [],
         },
       ],
-    }
+    },
+    response: {
+      200: t.Object({
+        data: t.String({ default: "OK" }),
+      }),
+      401: t.Object({
+        error: t.String({ default: "Unauthorized" }),
+      }),
+    },
   });
