@@ -63,11 +63,11 @@ describe("API Test Suite", () => {
           }),
         })
       );
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
 
       const body = await response.json();
-      expect(body.status).toBe("error");
-      expect(body.message).toBe("User created failed");
+      expect(body.type).toBe("validation");
+      expect(body.property).toBe("/password");
     });
 
     it("should fail when registering a duplicate email", async () => {

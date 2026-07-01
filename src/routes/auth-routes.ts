@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { AuthServices } from "../services/auth-services";
 
 export const authRoutes = new Elysia()
@@ -20,6 +20,15 @@ export const authRoutes = new Elysia()
         message: "Login failed",
         data: null,
       };
+    }
+  }, {
+    body: t.Object({
+      email: t.String({ format: "email", description: "Email terdaftar" }),
+      password: t.String({ description: "Password akun user" }),
+    }),
+    detail: {
+      summary: "User Login",
+      description: "Verifikasi email dan password untuk mendapatkan token sesi aktif.",
     }
   })
 
@@ -44,5 +53,15 @@ export const authRoutes = new Elysia()
     } catch (error) {
       set.status = 401;
       return { error: "Unauthorized" };
+    }
+  }, {
+    detail: {
+      summary: "User Logout",
+      description: "Menghapus sesi aktif dari database menggunakan Bearer token.",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
     }
   });
