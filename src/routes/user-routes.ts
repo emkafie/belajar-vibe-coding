@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { UserServices } from "../services/user-services";
 
 export const userRoutes = new Elysia()
@@ -19,6 +19,11 @@ export const userRoutes = new Elysia()
         data: null,
       };
     }
+  }, {
+    detail: {
+      summary: "Database Health Check",
+      description: "Mengecek apakah koneksi ke database PostgreSQL aktif dan berjalan baik.",
+    }
   })
 
   // GET /users -> list all users
@@ -37,6 +42,11 @@ export const userRoutes = new Elysia()
         message: "Failed to fetch users",
         data: null,
       };
+    }
+  }, {
+    detail: {
+      summary: "Get All Users",
+      description: "Mengambil daftar seluruh user terdaftar (tanpa menyertakan password).",
     }
   })
 
@@ -57,6 +67,16 @@ export const userRoutes = new Elysia()
         message: "User created failed",
         data: null,
       };
+    }
+  }, {
+    body: t.Object({
+      name: t.String({ description: "Nama lengkap user" }),
+      email: t.String({ format: "email", description: "Alamat email unik" }),
+      password: t.String({ description: "Password akun user" }),
+    }),
+    detail: {
+      summary: "Register User",
+      description: "Mendaftarkan user baru ke sistem dengan mengenkripsi password.",
     }
   })
 
@@ -81,5 +101,15 @@ export const userRoutes = new Elysia()
     } catch (error) {
       set.status = 401;
       return { error: "Unauthorized" };
+    }
+  }, {
+    detail: {
+      summary: "Get Active Profile",
+      description: "Mengambil data profil user yang sedang aktif berdasarkan Bearer token.",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
     }
   });
