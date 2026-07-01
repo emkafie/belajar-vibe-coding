@@ -1,6 +1,6 @@
-import { sql } from "drizzle-orm";
+import { sql, eq } from "drizzle-orm";
 import { db } from "../db";
-import { users } from "../db/schema";
+import { users, sessions } from "../db/schema";
 import bcrypt from "bcrypt";
 
 export class UserServices {
@@ -51,5 +51,22 @@ export class UserServices {
       });
 
     return newUser;
+  }
+
+  static async getCurrentUserByToken(token: string) {
+    const [result] = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(sessions)
+      .innerJoin(users, eq(sessions.userId, users.id))
+      .where(eq(sessions.token, token))
+      .limit(1);
+
+    return result || null;
   }
 }
